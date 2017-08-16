@@ -34,10 +34,10 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private val redPaint: Paint
     private val bluePaint: Paint
     private val paints = mutableListOf<Paint>()
-    private val dashPaint: Paint
+    private val baselinePaint: Paint
 
     // paths
-    private val dashPath = Path()
+    private val baselinePath = Path()
     private var currentPath = Path()
     private val paths = mutableListOf<Path>()
 
@@ -52,8 +52,6 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         val baselineDashGap = array.getDimension(R.styleable.SignatureView_baselineDashWidth, DEFAULT_BASELINE_DASH_GAP)
         array.recycle()
 
-        isDrawingCacheEnabled = true
-
         val basePaint = Paint().apply {
             isAntiAlias = true
             style = Paint.Style.STROKE
@@ -67,7 +65,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         paths.add(currentPath)
         paints.add(blackPaint)
 
-        dashPaint = Paint().apply {
+        baselinePaint = Paint().apply {
             isAntiAlias = true
             style = Paint.Style.STROKE
             color = baselineColor
@@ -93,10 +91,10 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        dashPath.reset()
+        baselinePath.reset()
         val stopY = bottom / 5f * 4f
-        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, stopY)          // first point (x, y)
-        dashPath.lineTo(right - DEFAULT_BASELINE_STROKE_MARGIN, stopY)  // connect with second point (x, y)
+        baselinePath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, stopY)          // first point (x, y)
+        baselinePath.lineTo(right - DEFAULT_BASELINE_STROKE_MARGIN, stopY)  // connect with second point (x, y)
     }
 
     /**
@@ -124,7 +122,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
      */
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.drawPath(dashPath, dashPaint)
+        canvas?.drawPath(baselinePath, baselinePaint)
         for (index in 0 until paths.size) {
             val path = paths[index]
             val paint = paints[index]
