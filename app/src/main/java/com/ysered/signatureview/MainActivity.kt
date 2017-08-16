@@ -3,6 +3,7 @@ package com.ysered.signatureview
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.RadioGroup
 import com.ysered.signatureview.view.SignatureView
 
@@ -24,6 +25,11 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
             signatureView.clearDrawing()
+        }
+
+        findViewById<ImageView>(R.id.buttonDone).setOnClickListener {
+            val bitmap = signatureView.signatureBitmap
+            bitmap
         }
     }
 }

@@ -2,10 +2,7 @@ package com.ysered.signatureview.view
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Canvas
-import android.graphics.DashPathEffect
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +38,8 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private val dashPath = Path()
     private var currentPath = Path()
     private val paths = mutableListOf<Path>()
+
+    private var signatureCanvas: Canvas? = null
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.SignatureView, defStyleAttr, 0)
@@ -81,6 +80,16 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             initPaintsAndPaths(value)
         }
 
+    var signatureBitmap: Bitmap? = null
+        private set
+
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight)
+        dashPath.reset()
+        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
+        dashPath.lineTo(width.toFloat() - DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = event?.let {
             when (event.action) {
@@ -98,20 +107,14 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return result ?: super.onTouchEvent(event)
     }
 
-    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        super.onSizeChanged(width, height, oldWidth, oldHeight)
-        dashPath.reset()
-        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
-        dashPath.lineTo(width.toFloat() - DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
-    }
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.let {
-            it.drawPath(dashPath, dashPaint)
-            for (index in 0 until paths.size) {
-                it.drawPath(paths[index], paints[index])
-            }
+        canvas?.drawPath(dashPath, dashPaint)
+        for (index in 0 until paths.size) {
+            val path = paths[index]
+            val paint = paints[index]
+            canvas?.drawPath(path, paint)
+            signatureCanvas?.drawPath(path, paint)
         }
     }
 
@@ -134,6 +137,8 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             StrokeColor.BLUE -> bluePaint
         }
         paints.add(paint)
+        signatureBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        signatureCanvas = Canvas(signatureBitmap)
     }
 
     /**
