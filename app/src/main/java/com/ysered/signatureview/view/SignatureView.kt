@@ -18,10 +18,12 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private val ONE_DP = Resources.getSystem().displayMetrics.density
 
     //defaults
-    private val DEFAULT_STROKE_WIDTH = 4 * ONE_DP
+    private val DEFAULT_STROKE_WIDTH = 4f * ONE_DP
     private val DEFAULT_BASELINE_COLOR = context.getResolvedColor(R.color.baselineDashColor)
-    private val DEFAULT_BASELINE_STROKE_WIDTH = 4 * ONE_DP
-    private val DEFAULT_BASELINE_STROKE_MARGIN = 16 * ONE_DP
+    private val DEFAULT_BASELINE_STROKE_WIDTH = 4f * ONE_DP
+    private val DEFAULT_BASELINE_STROKE_MARGIN = 16f * ONE_DP
+    private val DEFAULT_BASELINE_DASH_WIDTH = 30f
+    private val DEFAULT_BASELINE_DASH_GAP = 20f
 
     private val COLOR_BLACK = context.getResolvedColor(R.color.black)
     private val COLOR_RED = context.getResolvedColor(R.color.red)
@@ -46,8 +48,8 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         val signatureStrokeWidth = array.getDimension(R.styleable.SignatureView_strokeWidth, DEFAULT_STROKE_WIDTH)
         val baselineColor = array.getColor(R.styleable.SignatureView_baselineColor, DEFAULT_BASELINE_COLOR)
         val baselineStrokeWidth = array.getDimension(R.styleable.SignatureView_baselineStrokeWidth, DEFAULT_BASELINE_STROKE_WIDTH)
-        val baselineDashWidth = array.getDimension(R.styleable.SignatureView_baselineDashWidth, 30f)
-        val baselineDashGap = array.getDimension(R.styleable.SignatureView_baselineDashWidth, 20f)
+        val baselineDashWidth = array.getDimension(R.styleable.SignatureView_baselineDashWidth, DEFAULT_BASELINE_DASH_WIDTH)
+        val baselineDashGap = array.getDimension(R.styleable.SignatureView_baselineDashWidth, DEFAULT_BASELINE_DASH_GAP)
         array.recycle()
 
         isDrawingCacheEnabled = true
@@ -74,22 +76,32 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         }
     }
 
+    /**
+     * Changes line color.
+     */
     var strokeColor: StrokeColor = StrokeColor.BLACK
         set(value) {
             field = value
-            initPaintsAndPaths(value)
+            initDrawing(value)
         }
 
+    /**
+     * Returns bitmap with signature drawing.
+     */
     var signatureBitmap: Bitmap? = null
         private set
 
-    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        super.onSizeChanged(width, height, oldWidth, oldHeight)
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
         dashPath.reset()
-        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
-        dashPath.lineTo(width.toFloat() - DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
+        val stopY = bottom / 5f * 4f
+        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, stopY)          // first point (x, y)
+        dashPath.lineTo(right - DEFAULT_BASELINE_STROKE_MARGIN, stopY)  // connect with second point (x, y)
     }
 
+    /**
+     * Overrides touch events to remember paths of user's finger movements.
+     */
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = event?.let {
             when (event.action) {
@@ -107,6 +119,9 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return result ?: super.onTouchEvent(event)
     }
 
+    /**
+     * Draws colored lines on view and result signature bitmap canvases.
+     */
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawPath(dashPath, dashPaint)
@@ -118,17 +133,21 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         }
     }
 
+    /**
+     * Clears everything drawn on the view.
+     */
     fun clearDrawing() {
-        // clear previous strokes
         paths.forEach { it.reset() }
         invalidate()
-        // get rid of unused stroke paths
         paths.clear()
         paints.clear()
-        initPaintsAndPaths(strokeColor)
+        initDrawing(strokeColor)
     }
 
-    private fun initPaintsAndPaths(strokeColor: StrokeColor) {
+    /**
+     * Resets paths, paints and bitmap to initial state.
+     */
+    private fun initDrawing(strokeColor: StrokeColor) {
         currentPath = Path()
         paths.add(currentPath)
         val paint = when (strokeColor) {
