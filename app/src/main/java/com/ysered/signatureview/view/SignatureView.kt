@@ -3,15 +3,15 @@ package com.ysered.signatureview.view
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.ysered.signatureview.R
+import com.ysered.signatureview.util.getResolvedColor
 
-class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View(context, attrs, defStyleAttr) {
+class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : View(context, attrs, defStyleAttr) {
 
     constructor(context: Context) : this(context, null)
 
@@ -19,11 +19,18 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int): 
 
     private val DEFAULT_STROKE_WIDTH = 4 * Resources.getSystem().displayMetrics.density
 
-    private val signatureStrokePaint: Paint
+    // resolve colors on creation state
+    private val COLOR_BLACK = context.getResolvedColor(R.color.black)
+    private val COLOR_RED = context.getResolvedColor(R.color.red)
+    private val COLOR_BLUE = context.getResolvedColor(R.color.blue)
 
-    private val path = Path()
+    private val blackPaint: Paint
+    private val redPaint: Paint
+    private val bluePaint: Paint
+    private val paints = mutableListOf<Paint>()
 
-    var strokeColor: Int = Color.BLACK
+    private var currentPath: Path = Path()
+    private val paths = mutableListOf<Path>()
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.SignatureView, defStyleAttr, 0)
@@ -32,24 +39,35 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int): 
 
         isDrawingCacheEnabled = true
 
-        signatureStrokePaint = Paint().apply {
+        val basePaint = Paint().apply {
             isAntiAlias = true
-            color = strokeColor
             style = Paint.Style.STROKE
             strokeWidth = signatureStrokeWidth
             strokeJoin = Paint.Join.ROUND
         }
+        blackPaint = Paint(basePaint).apply { color = COLOR_BLACK }
+        redPaint = Paint(basePaint).apply { color = COLOR_RED }
+        bluePaint = Paint(basePaint).apply { color = COLOR_BLUE }
+
+        paths.add(currentPath)
+        paints.add(blackPaint)
     }
+
+    var strokeColor: StrokeColor = StrokeColor.BLACK
+        set(value) {
+            field = value
+            initPaintsAndPaths(value)
+        }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = event?.let {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    path.moveTo(event.x, event.y)
+                    currentPath.moveTo(event.x, event.y)
                     invalidate()
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    path.lineTo(event.x, event.y)
+                    currentPath.lineTo(event.x, event.y)
                     invalidate()
                 }
             }
@@ -60,6 +78,36 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int): 
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.drawPath(path, signatureStrokePaint)
+        for (index in 0 until paths.size) {
+            canvas?.drawPath(paths[index], paints[index])
+        }
+    }
+
+    fun clearDrawing() {
+        // clear previous strokes
+        paths.forEach { it.reset() }
+        invalidate()
+        // get rid of unused stroke paths
+        paths.clear()
+        paints.clear()
+        initPaintsAndPaths(strokeColor)
+    }
+
+    private fun initPaintsAndPaths(strokeColor: StrokeColor) {
+        currentPath = Path()
+        paths.add(currentPath)
+        val paint = when (strokeColor) {
+            StrokeColor.BLACK -> blackPaint
+            StrokeColor.RED -> redPaint
+            StrokeColor.BLUE -> bluePaint
+        }
+        paints.add(paint)
+    }
+
+    /**
+     * Defines possible stroke colors with theirs corresponding resources.
+     */
+    enum class StrokeColor {
+        BLACK, RED, BLUE
     }
 }
