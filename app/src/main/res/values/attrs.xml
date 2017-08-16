@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="SignatureView">
         <attr name="strokeWidth" format="dimension"/>
+        <attr name="baselineColor" format="color"/>
+        <attr name="baselineStrokeWidth" format="dimension"/>
+        <attr name="baselineDashWidth" format="dimension"/>
+        <attr name="baselineDashGap" format="dimension"/>
     </declare-styleable>
 </resources>

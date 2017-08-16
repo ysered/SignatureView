@@ -3,6 +3,7 @@ package com.ysered.signatureview.view
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
+import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
@@ -17,24 +18,37 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    private val DEFAULT_STROKE_WIDTH = 4 * Resources.getSystem().displayMetrics.density
+    private val ONE_DP = Resources.getSystem().displayMetrics.density
 
-    // resolve colors on creation state
+    //defaults
+    private val DEFAULT_STROKE_WIDTH = 4 * ONE_DP
+    private val DEFAULT_BASELINE_COLOR = context.getResolvedColor(R.color.baselineDashColor)
+    private val DEFAULT_BASELINE_STROKE_WIDTH = 4 * ONE_DP
+    private val DEFAULT_BASELINE_STROKE_MARGIN = 16 * ONE_DP
+
     private val COLOR_BLACK = context.getResolvedColor(R.color.black)
     private val COLOR_RED = context.getResolvedColor(R.color.red)
     private val COLOR_BLUE = context.getResolvedColor(R.color.blue)
 
+    // paints
     private val blackPaint: Paint
     private val redPaint: Paint
     private val bluePaint: Paint
     private val paints = mutableListOf<Paint>()
+    private val dashPaint: Paint
 
-    private var currentPath: Path = Path()
+    // paths
+    private val dashPath = Path()
+    private var currentPath = Path()
     private val paths = mutableListOf<Path>()
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.SignatureView, defStyleAttr, 0)
         val signatureStrokeWidth = array.getDimension(R.styleable.SignatureView_strokeWidth, DEFAULT_STROKE_WIDTH)
+        val baselineColor = array.getColor(R.styleable.SignatureView_baselineColor, DEFAULT_BASELINE_COLOR)
+        val baselineStrokeWidth = array.getDimension(R.styleable.SignatureView_baselineStrokeWidth, DEFAULT_BASELINE_STROKE_WIDTH)
+        val baselineDashWidth = array.getDimension(R.styleable.SignatureView_baselineDashWidth, 30f)
+        val baselineDashGap = array.getDimension(R.styleable.SignatureView_baselineDashWidth, 20f)
         array.recycle()
 
         isDrawingCacheEnabled = true
@@ -51,6 +65,14 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
         paths.add(currentPath)
         paints.add(blackPaint)
+
+        dashPaint = Paint().apply {
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            color = baselineColor
+            strokeWidth = baselineStrokeWidth
+            pathEffect = DashPathEffect(floatArrayOf(baselineDashWidth, baselineDashGap), 0f)
+        }
     }
 
     var strokeColor: StrokeColor = StrokeColor.BLACK
@@ -76,10 +98,20 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return result ?: super.onTouchEvent(event)
     }
 
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight)
+        dashPath.reset()
+        dashPath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
+        dashPath.lineTo(width.toFloat() - DEFAULT_BASELINE_STROKE_MARGIN, width / 4f * 3f)
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        for (index in 0 until paths.size) {
-            canvas?.drawPath(paths[index], paints[index])
+        canvas?.let {
+            it.drawPath(dashPath, dashPaint)
+            for (index in 0 until paths.size) {
+                it.drawPath(paths[index], paints[index])
+            }
         }
     }
 

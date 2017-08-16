@@ -8,6 +8,7 @@
     <color name="black">#000000</color>
     <color name="red">#de0000</color>
     <color name="blue">#0000de</color>
+    <color name="baselineDashColor">#BDBDBD</color>
 
     <color name="buttonTextColor">#1E88E5</color>
 </resources>
