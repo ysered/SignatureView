@@ -2,7 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <stroke android:color="@android:color/transparent" android:width="@dimen/ringStrokeWidth"/>
+            <solid android:color="@android:color/transparent"/>
+            <stroke
+                android:width="@dimen/ringStrokeWidth"
+                android:color="@android:color/transparent"/>
             <padding
                 android:bottom="@dimen/radioRingPadding"
                 android:left="@dimen/radioRingPadding"
