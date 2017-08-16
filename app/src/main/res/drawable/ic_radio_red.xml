@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <stroke android:color="@android:color/transparent" android:width="@dimen/ringStrokeWidth"/>
+            <padding
+                android:bottom="@dimen/radioRingPadding"
+                android:left="@dimen/radioRingPadding"
+                android:right="@dimen/radioRingPadding"
+                android:top="@dimen/radioRingPadding"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/red"/>
+            <size
+                android:width="@dimen/radioIconSize"
+                android:height="@dimen/radioIconSize"/>
+        </shape>
+    </item>
+</layer-list>

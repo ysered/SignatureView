@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SignatureView</string>
+    <string name="clear">Clear</string>
+    <string name="draw_signature_description">Draw your signature by finger and save in electronic representation</string>
+    <string name="close">Close</string>
+    <string name="done">Done</string>
 </resources>

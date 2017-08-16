@@ -5,15 +5,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
     tools:context="com.ysered.signatureview.MainActivity">
 
     <com.ysered.signatureview.view.SignatureView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:id="@+id/signatureView"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/signatureViewHeight"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:strokeWidth="4dp"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/marginDefault"
+        android:layout_marginLeft="@dimen/marginDefault"
+        android:layout_marginStart="@dimen/marginDefault"
+        android:layout_marginTop="@dimen/marginSmall"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <RadioButton
+            android:id="@+id/blackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginExtraSmall"
+            android:layout_marginRight="@dimen/marginExtraSmall"
+            android:background="@drawable/selector_radio_black"
+            android:button="@null"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/redButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginExtraSmall"
+            android:layout_marginRight="@dimen/marginExtraSmall"
+            android:background="@drawable/selector_radio_red"
+            android:button="@null"/>
+
+        <RadioButton
+            android:id="@+id/blueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_radio_blue"
+            android:button="@null"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/clearButton"
+        style="@style/ClearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/marginDefault"
+        android:layout_marginStart="@dimen/marginDefault"
+        android:text="@string/clear"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/radioGroup"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/radioGroup"
+        />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/marginDefault"
+        android:layout_marginRight="@dimen/marginDefault"
+        android:layout_marginTop="@dimen/marginDefault"
+        android:text="@string/draw_signature_description"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signatureView"/>
+
+    <ImageView
+        android:id="@+id/buttonClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/marginDefault"
+        android:layout_marginStart="@dimen/marginDefault"
+        android:layout_marginTop="@dimen/marginDefault"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/close"
+        android:src="@drawable/ic_close"
+        app:layout_constraintLeft_toLeftOf="@+id/signatureView"
+        app:layout_constraintTop_toTopOf="@+id/signatureView"/>
+
+    <ImageView
+        android:id="@+id/buttonDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/marginDefault"
+        android:layout_marginRight="@dimen/marginDefault"
+        android:layout_marginTop="@dimen/marginDefault"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/done"
+        android:src="@drawable/ic_done"
+        app:layout_constraintRight_toRightOf="@+id/signatureView"
+        app:layout_constraintTop_toTopOf="@+id/signatureView"/>
 
 </android.support.constraint.ConstraintLayout>
