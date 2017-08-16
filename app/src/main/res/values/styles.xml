@@ -5,7 +5,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="ClearButton" parent="@style/Base.Widget.AppCompat.Button.Borderless">
-        <item name="android:textColor">@color/blue</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
     </style>
 </resources>
