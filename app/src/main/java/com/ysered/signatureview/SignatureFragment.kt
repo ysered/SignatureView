@@ -1,6 +1,5 @@
 package com.ysered.signatureview
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -19,18 +18,8 @@ import com.ysered.signatureview.view.SignatureView
  */
 class SignatureFragment : Fragment() {
 
-    override fun onStart() {
-        activity.apply {
-            setLandscapeOrientation()
-            dimStatusBar()
-            isShowActionBar = false
-        }
-        super.onStart()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_signature, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
+            = inflater?.inflate(R.layout.fragment_signature, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val signatureView = view?.findViewById<SignatureView>(R.id.signatureView)
@@ -53,10 +42,12 @@ class SignatureFragment : Fragment() {
         }
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    override fun onStart() {
+        activity.apply {
+            setLandscapeOrientation()
+            dimStatusBar()
+            isShowActionBar = false
         }
+        super.onStart()
     }
 }

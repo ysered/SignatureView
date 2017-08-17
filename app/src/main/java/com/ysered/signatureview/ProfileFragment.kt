@@ -13,6 +13,15 @@ import com.ysered.signatureview.util.resetStatusBar
 
 class ProfileFragment : Fragment() {
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
+            = inflater?.inflate(R.layout.fragment_profile, container, false)
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        view?.findViewById<Button>(R.id.signatureViewButton)?.setOnClickListener {
+            activity.replaceFragment(SignatureFragment(), addToBackStack = true)
+        }
+    }
+
     override fun onStart() {
         activity.apply {
             resetOrientation()
@@ -20,15 +29,5 @@ class ProfileFragment : Fragment() {
             isShowActionBar = true
         }
         super.onStart()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_profile, container, false)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        view?.findViewById<Button>(R.id.signatureViewButton)?.setOnClickListener {
-            activity.replaceFragment(SignatureFragment(), addToBackStack = true)
-        }
     }
 }
