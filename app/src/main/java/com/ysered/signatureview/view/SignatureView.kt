@@ -41,6 +41,8 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private var currentPath = Path()
     private val paths = mutableListOf<Path>()
 
+    private var signatureBitmapWidth = 0
+    private var signatureBitmapHeight = 0
     private var signatureCanvas: Canvas? = null
 
     init {
@@ -95,6 +97,8 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         val stopY = bottom / 5f * 4f
         baselinePath.moveTo(DEFAULT_BASELINE_STROKE_MARGIN, stopY)          // first point (x, y)
         baselinePath.lineTo(right - DEFAULT_BASELINE_STROKE_MARGIN, stopY)  // connect with second point (x, y)
+        signatureBitmapWidth = width
+        signatureBitmapHeight = height
     }
 
     /**
@@ -154,7 +158,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             StrokeColor.BLUE -> bluePaint
         }
         paints.add(paint)
-        signatureBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        signatureBitmap = Bitmap.createBitmap(signatureBitmapWidth, signatureBitmapHeight, Bitmap.Config.ARGB_8888)
         signatureCanvas = Canvas(signatureBitmap)
     }
 
