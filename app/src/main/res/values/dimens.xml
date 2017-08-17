@@ -4,7 +4,7 @@
     <dimen name="marginSmall">8dp</dimen>
     <dimen name="marginExtraSmall">4dp</dimen>
 
-    <dimen name="signatureViewHeight">150dp</dimen>
+    <dimen name="signatureViewHeight">220dp</dimen>
 
     <dimen name="radioIconSize">32dp</dimen>
     <dimen name="radioRingPadding">6dp</dimen>

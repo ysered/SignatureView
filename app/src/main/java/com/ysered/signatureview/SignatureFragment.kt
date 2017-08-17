@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioGroup
 import com.ysered.signatureview.util.dimStatusBar
@@ -22,24 +23,30 @@ class SignatureFragment : Fragment() {
             = inflater?.inflate(R.layout.fragment_signature, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        val signatureView = view?.findViewById<SignatureView>(R.id.signatureView)
+        view?.let {
+            val signatureView = it.findViewById<SignatureView>(R.id.signatureView)
 
-        view?.findViewById<RadioGroup>(R.id.radioGroup)?.setOnCheckedChangeListener { radioGroup, _ ->
-            signatureView?.strokeColor = when (radioGroup.checkedRadioButtonId) {
-                R.id.redButton -> SignatureView.StrokeColor.RED
-                R.id.blueButton -> SignatureView.StrokeColor.BLUE
-                else -> SignatureView.StrokeColor.BLACK
+            it.findViewById<RadioGroup>(R.id.radioGroup)?.setOnCheckedChangeListener { radioGroup, _ ->
+                signatureView?.strokeColor = when (radioGroup.checkedRadioButtonId) {
+                    R.id.redButton -> SignatureView.StrokeColor.RED
+                    R.id.blueButton -> SignatureView.StrokeColor.BLUE
+                    else -> SignatureView.StrokeColor.BLACK
+                }
+            }
+
+            it.findViewById<ImageButton>(R.id.buttonClose)?.setOnClickListener {
+                activity.onBackPressed()
+            }
+            it.findViewById<ImageView>(R.id.buttonDone)?.setOnClickListener {
+                val bitmap = signatureView?.signatureBitmap
+                bitmap
+            }
+
+            it.findViewById<Button>(R.id.clearButton)?.setOnClickListener {
+                signatureView?.clearDrawing()
             }
         }
 
-        view?.findViewById<Button>(R.id.clearButton)?.setOnClickListener {
-            signatureView?.clearDrawing()
-        }
-
-        view?.findViewById<ImageView>(R.id.buttonDone)?.setOnClickListener {
-            val bitmap = signatureView?.signatureBitmap
-            bitmap
-        }
     }
 
     override fun onStart() {
