@@ -20,7 +20,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     //defaults
     private val DEFAULT_STROKE_WIDTH = 4f * ONE_DP
     private val DEFAULT_BASELINE_COLOR = context.getResolvedColor(R.color.baselineDashColor)
-    private val DEFAULT_BASELINE_STROKE_WIDTH = 4f * ONE_DP
+    private val DEFAULT_BASELINE_STROKE_WIDTH = 3f * ONE_DP
     private val DEFAULT_BASELINE_STROKE_MARGIN = 16f * ONE_DP
     private val DEFAULT_BASELINE_DASH_WIDTH = 30f
     private val DEFAULT_BASELINE_DASH_GAP = 20f
