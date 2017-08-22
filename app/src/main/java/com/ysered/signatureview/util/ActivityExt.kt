@@ -16,12 +16,10 @@ fun Activity.setLandscapeOrientation() {
 }
 
 /**
- * Resets orientation to its initial state if it was changed (e.g. by [setLandscapeOrientation]).
+ * Resets orientation to its current actual device orientation [ActivityInfo.SCREEN_ORIENTATION_SENSOR].
  */
 fun Activity.resetOrientation() {
-    resources?.configuration?.orientation?.let {
-        requestedOrientation = it
-    }
+    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
 }
 
 /**
@@ -60,15 +58,25 @@ var Activity.isShowActionBar: Boolean
 /**
  * Replaces fragment using [android.support.v4.app.FragmentManager].
  */
-fun AppCompatActivity.replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
+fun AppCompatActivity.replaceFragment(fragment: Fragment, tag: String? = null, addToBackStack: Boolean = false) {
     val transaction = supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment, null)
+            .replace(android.R.id.content, fragment, tag)
     if (addToBackStack) {
         transaction.addToBackStack(null)
     }
     transaction.commit()
 }
 
-fun Activity.replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
-    (this as? AppCompatActivity)?.replaceFragment(fragment, addToBackStack)
+fun Activity.replaceFragment(fragment: Fragment, tag: String? = null, addToBackStack: Boolean = false) {
+    (this as? AppCompatActivity)?.replaceFragment(fragment, tag, addToBackStack)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Fragment> Activity.findFragmentByTag(tag: String): T? {
+    val compatActivity = this as? AppCompatActivity
+    compatActivity?.let {
+        val fragment = it.supportFragmentManager?.findFragmentByTag(tag)
+        return fragment as? T
+    }
+    return null
 }
