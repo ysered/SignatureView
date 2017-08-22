@@ -167,7 +167,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     /**
-     * Defines possible stroke colors with theirs corresponding resources.
+     * Defines possible stroke colors.
      */
     enum class StrokeColor {
         BLACK, RED, BLUE
