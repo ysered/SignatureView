@@ -99,6 +99,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         baselinePath.lineTo(right - DEFAULT_BASELINE_STROKE_MARGIN, stopY)  // connect with second point (x, y)
         signatureBitmapWidth = width
         signatureBitmapHeight = height
+        initDrawing(strokeColor)
     }
 
     /**
