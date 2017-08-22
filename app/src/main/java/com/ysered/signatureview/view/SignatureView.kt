@@ -9,6 +9,9 @@ import android.view.View
 import com.ysered.signatureview.R
 import com.ysered.signatureview.util.getResolvedColor
 
+/**
+ * Allows to draw and save signature into bitmap.
+ */
 class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : View(context, attrs, defStyleAttr) {
 
     constructor(context: Context) : this(context, null)
@@ -107,7 +110,7 @@ class SignatureView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
      */
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = event?.let {
-            when (event.action) {
+            when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
                     currentPath.moveTo(event.x, event.y)
                     invalidate()
